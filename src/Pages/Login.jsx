@@ -1,11 +1,51 @@
+import { useContext, useEffect,  useState } from "react";
+import {
+  loadCaptchaEnginge,
+  LoadCanvasTemplate,
+  validateCaptcha,
+} from "react-simple-captcha";
+import { AuthContext } from "../Provider/AuthProvider";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
+
 const Login = () => {
+  const { signIn } = useContext(AuthContext);
+console.log(signIn);
+  const [disable, setDisable] = useState(true);
+  const navigate = useNavigate()
+  const location = useLocation()
+  const from = location.state?.from?.pathname || '/'
+  useEffect(() => {
+    loadCaptchaEnginge(6);
+  }, []);
   const handleLogin = (e) => {
     e.preventDefault();
     const from = e.target;
     const email = from.email.value;
     const password = from.password.value;
-    console.log(email, password);
-    };
+    // console.log(email, password);
+    signIn(email, password)
+      .then((result) => {
+      const users = result.user;
+      console.log(users);
+      Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: "User Login SuccessFully",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+        navigate(from, { replace:true})
+    });
+  };
+  const handleValidateCaptch = (e) => {
+    const user_captcha_value = e.target.value;
+    if (validateCaptcha(user_captcha_value)) {
+      setDisable(false);
+    } else {
+      setDisable(true);
+    }
+  };
   return (
     <div className="hero min-h-screen bg-base-200">
       <div className="hero-content flex-col lg:flex-row-reverse">
@@ -48,10 +88,32 @@ const Login = () => {
                 </a>
               </label>
             </div>
+            <div className="form-control">
+              <label className="label">
+                <LoadCanvasTemplate />
+              </label>
+              <input
+                onBlur={handleValidateCaptch}
+               
+                type="text"
+                placeholder="type the text above"
+                name="captcha"
+                className="input input-bordered"
+                required
+              />
+       
+            </div>
             <div className="form-control mt-6">
-              <button className="btn btn-primary">Login</button>
+              <button disabled={disable} className="btn btn-primary">
+                Login
+              </button>
             </div>
           </form>
+          <p>
+            <small>
+              New Here?<Link to="/signUp">Create an Account</Link>
+            </small>
+          </p>
         </div>
       </div>
     </div>

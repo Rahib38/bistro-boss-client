@@ -1,21 +1,49 @@
+import { useContext } from "react";
 import { Link } from "react-router-dom";
+import { AuthContext } from "../../Provider/AuthProvider";
+import { FaCartPlus } from "react-icons/fa";
 
 const Navbar = () => {
+  const { user,logOut } = useContext(AuthContext);
+  const handleLogOut = () => {
+    logOut()
+      .then(() => { })
+    .catch(error=>console.log(error))
+  }
   const navLinks = (
     <>
       <li>
-        <Link to='/'>Home</Link>
+        <Link to="/">Home</Link>
       </li>
 
       <li>
-        <Link to='/menu'>Menu</Link>
+        <Link to="/menu">Menu</Link>
       </li>
       <li>
-        <Link to='/order'>Order</Link>
+        <Link to="/order">Order</Link>
       </li>
       <li>
-        <Link to='/login'>Log in</Link>
+        <Link to="/secret">Secret</Link>
       </li>
+      <li>
+        <Link to="/">
+          <button className="flex gap-2 justify-center items-center">
+            <FaCartPlus />
+            <div className="badge badge-secondary">+99</div>
+          </button>
+        </Link>
+      </li>
+
+      {user ? (
+        // (<span>{user?.displayName}</span>)
+        <button onClick={handleLogOut} className=" btn-active btn-ghost">
+          LogOut
+        </button>
+      ) : (
+        <li>
+          <Link to="/login">Log in</Link>
+        </li>
+      )}
     </>
   );
   return (
