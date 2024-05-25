@@ -14,7 +14,7 @@ console.log(signIn);
   const [disable, setDisable] = useState(true);
   const navigate = useNavigate()
   const location = useLocation()
-  const from = location.state?.from?.pathname || '/'
+  const form = location.state?.from?.pathname || '/'
   useEffect(() => {
     loadCaptchaEnginge(6);
   }, []);
@@ -35,7 +35,7 @@ console.log(signIn);
         showConfirmButton: false,
         timer: 1500,
       });
-        navigate(from, { replace:true})
+        navigate(form, { replace:true})
     });
   };
   const handleValidateCaptch = (e) => {
@@ -104,7 +104,7 @@ console.log(signIn);
        
             </div>
             <div className="form-control mt-6">
-              <button disabled={disable} className="btn btn-primary">
+              <button disabled={false} className="btn btn-primary">
                 Login
               </button>
             </div>
